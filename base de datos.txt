@@ -1,0 +1,68 @@
+CREATE DATABASE TiendaOnline;
+GO
+
+USE TiendaOnline;
+GO
+
+-- Tabla Clientes
+CREATE TABLE Clientes (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Nombre NVARCHAR(100) NOT NULL,
+    Apellidos NVARCHAR(100) NOT NULL,
+    Direccion NVARCHAR(200) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    Password NVARCHAR(255) NOT NULL,
+    FechaRegistro DATETIME DEFAULT GETDATE()
+);
+
+-- Tabla Tienda
+CREATE TABLE Tiendas (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Sucursal NVARCHAR(100) NOT NULL,
+    Direccion NVARCHAR(200) NOT NULL
+);
+
+-- Tabla Artículos
+CREATE TABLE Articulos (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Codigo NVARCHAR(50) NOT NULL UNIQUE,
+    Descripcion NVARCHAR(200) NOT NULL,
+    Precio DECIMAL(18,2) NOT NULL,
+    Imagen NVARCHAR(255),
+    Stock INT NOT NULL DEFAULT 0
+);
+
+-- Tabla relación Artículo-Tienda
+CREATE TABLE ArticuloTienda (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    ArticuloId INT NOT NULL,
+    TiendaId INT NOT NULL,
+    FechaAsignacion DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (ArticuloId) REFERENCES Articulos(Id),
+    FOREIGN KEY (TiendaId) REFERENCES Tiendas(Id),
+    CONSTRAINT UQ_ArticuloTienda UNIQUE (ArticuloId, TiendaId)
+);
+
+-- Tabla relación Cliente-Artículo (Compras)
+CREATE TABLE Compras (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    ClienteId INT NOT NULL,
+    ArticuloId INT NOT NULL,
+    FechaCompra DATETIME DEFAULT GETDATE(),
+    Cantidad INT NOT NULL DEFAULT 1,
+    PrecioUnitario DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ClienteId) REFERENCES Clientes(Id),
+    FOREIGN KEY (ArticuloId) REFERENCES Articulos(Id)
+);
+
+-- Tabla Carrito
+CREATE TABLE Carrito (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    ClienteId INT NOT NULL,
+    ArticuloId INT NOT NULL,
+    Cantidad INT NOT NULL DEFAULT 1,
+    FechaAgregado DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (ClienteId) REFERENCES Clientes(Id),
+    FOREIGN KEY (ArticuloId) REFERENCES Articulos(Id),
+    CONSTRAINT UQ_Carrito UNIQUE (ClienteId, ArticuloId)
+);

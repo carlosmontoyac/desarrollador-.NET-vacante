@@ -1,0 +1,29 @@
+TiendaOnline/
+├── TiendaOnline.API/           # Capa Front (Angular)
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── auth/           # Módulo de autenticación
+│   │   │   ├── clientes/       # CRUD clientes
+│   │   │   ├── tiendas/        # CRUD tiendas
+│   │   │   ├── articulos/      # CRUD artículos
+│   │   │   ├── carrito/        # Módulo carrito de compras
+│   │   │   ├── shared/         # Componentes compartidos
+│   │   │   └── ...             # Otros módulos
+│   │   └── ...                 # Configuración Angular
+│   └── ...                     
+├── TiendaOnline.Business/       # Capa Business
+│   ├── Interfaces/             # Interfaces de servicios
+│   ├── Services/               # Implementación de servicios
+│   └── ...                     
+├── TiendaOnline.Data/          # Capa Data
+│   ├── Repositories/           # Repositorios
+│   ├── Context/                # DbContext
+│   └── ...                     
+├── TiendaOnline.Entities/      # Capa Entities
+│   ├── Models/                 # Modelos de datos
+│   ├── DTOs/                   # Data Transfer Objects
+│   └── ...                     
+└── TiendaOnline.API/           # Web API (punto de entrada)
+    ├── Controllers/            # Controladores API
+    ├── Middlewares/            # Middlewares personalizados
+    └── ...

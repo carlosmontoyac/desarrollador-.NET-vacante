@@ -1,0 +1,49 @@
+// TiendaOnline.Business/Interfaces/ICarritoService.cs
+public interface ICarritoService
+{
+    Task<IEnumerable<CarritoItemDto>> GetCarrito(int clienteId);
+    Task AddToCarrito(int clienteId, int articuloId, int cantidad);
+    Task UpdateCantidad(int clienteId, int articuloId, int cantidad);
+    Task RemoveFromCarrito(int clienteId, int articuloId);
+    Task<CompraResult> RealizarCompra(int clienteId);
+}
+
+// TiendaOnline.API/Controllers/CarritoController.cs
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class CarritoController : ControllerBase
+{
+    private readonly ICarritoService _carritoService;
+    private readonly ICurrentUserService _currentUser;
+    
+    public CarritoController(ICarritoService carritoService, ICurrentUserService currentUser)
+    {
+        _carritoService = carritoService;
+        _currentUser = currentUser;
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetCarrito()
+    {
+        var clienteId = _currentUser.UserId;
+        var items = await _carritoService.GetCarrito(clienteId);
+        return Ok(items);
+    }
+    
+    [HttpPost("add")]
+    public async Task<IActionResult> AddToCarrito([FromBody] AddToCarritoRequest request)
+    {
+        var clienteId = _currentUser.UserId;
+        await _carritoService.AddToCarrito(clienteId, request.ArticuloId, request.Cantidad);
+        return Ok();
+    }
+    
+    [HttpPost("checkout")]
+    public async Task<IActionResult> RealizarCompra()
+    {
+        var clienteId = _currentUser.UserId;
+        var result = await _carritoService.RealizarCompra(clienteId);
+        return Ok(result);
+    }
+}

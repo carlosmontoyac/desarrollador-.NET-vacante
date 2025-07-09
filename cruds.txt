@@ -1,0 +1,67 @@
+// TiendaOnline.Business/Interfaces/IArticuloService.cs
+public interface IArticuloService
+{
+    Task<IEnumerable<Articulo>> GetAllArticulos();
+    Task<Articulo> GetArticuloById(int id);
+    Task<Articulo> CreateArticulo(Articulo articulo);
+    Task UpdateArticulo(Articulo articulo);
+    Task DeleteArticulo(int id);
+    Task AsignarTienda(int articuloId, int tiendaId);
+    Task<IEnumerable<Tienda>> GetTiendasPorArticulo(int articuloId);
+}
+// TiendaOnline.Business/Services/ArticuloService.cs
+public class ArticuloService : IArticuloService
+{
+    private readonly IArticuloRepository _articuloRepository;
+    
+    public ArticuloService(IArticuloRepository articuloRepository)
+    {
+        _articuloRepository = articuloRepository;
+    }
+    
+    public async Task<IEnumerable<Articulo>> GetAllArticulos()
+    {
+        return await _articuloRepository.GetAll();
+    }
+    
+    // Implementación de otros métodos...
+}
+// TiendaOnline.Data/Repositories/ArticuloRepository.cs
+public class ArticuloRepository : IArticuloRepository
+{
+    private readonly TiendaOnlineContext _context;
+    
+    public ArticuloRepository(TiendaOnlineContext context)
+    {
+        _context = context;
+    }
+    
+    public async Task<IEnumerable<Articulo>> GetAll()
+    {
+        return await _context.Articulos.ToListAsync();
+    }
+    
+    // Implementación de otros métodos...
+}
+// TiendaOnline.API/Controllers/ArticulosController.cs
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class ArticulosController : ControllerBase
+{
+    private readonly IArticuloService _articuloService;
+    
+    public ArticulosController(IArticuloService articuloService)
+    {
+        _articuloService = articuloService;
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var articulos = await _articuloService.GetAllArticulos();
+        return Ok(articulos);
+    }
+    
+    // Otros endpoints...
+}
